@@ -3,6 +3,7 @@
 # =====================================================================
  &KPP_PARM01
  KPPwriteState=.FALSE.,
- minKPPhbl = 10.,
- Ricr = 0.3,
+ KPPmixingMaps=.FALSE., 
+ minKPPhbl=30.,
+ LimitHblStable=.FALSE.,
  &
