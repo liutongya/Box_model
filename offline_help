@@ -1,1 +1,96 @@
 http://mailman.mitgcm.org/pipermail/mitgcm-support/2007-August/005002.html
+
+Ryan -
+
+the offline pkg does a linear interpolation between
+fields. (This is same procedure as is done for the
+forcing fields in the online model).
+(if you are curious see offline_fields_load.F)
+
+you don't need to rename your fields. there is a
+seperate "deltaToffline" which will keep track of
+when (and what timestamp to look for) to read the
+fields. From your error message I'm guessing that
+your deltaToffline isn't correct.
+
+Here is an example from verification/tutorial_cfc_offline/input/data.off
+
+
+  &OFFLINE_PARM02
+   offlineIter0=4248000,
+   deltaToffline=43200.,
+   offlineForcingPeriod=2592000.,
+   offlineForcingCycle=31104000.,
+  &
+
+offlineIter0 is the number of the first file to read.
+deltaToffline is the timestep of the original online run
+    used to create the fields.
+I think what you've done for offlineForcingPeriod, offlineForcingCycle
+should work okay.
+
+Note though, that the first timestep of the offline run will
+read in the last and first file of your online fields - and
+interpolate between them to give the fields used.
+
+Hmmm - complicated to explain - come see me if this
+doesn't make much sense!
+
+stephanie
+
+
+On Wed, 15 Aug 2007, Ryan Abernathey wrote:
+
+> Hello Wise GCC Users,
+>
+> I'm hoping someone can help me understand the inner workings of the offline 
+> package... This is a slightly complicated question, so please disregard 
+> this message if you don't care to wade through it.
+>
+> I have a 2 year long set of velocity fields that I want to use to advect a 
+> tracer. I want to be sure I understand how the offline fields are imported 
+> and interpolated in the model.
+>
+> I don't want any cycling of these fields, just a simple 2 year run. 
+> Therefore, I made all these parameters the same:
+> data
+> periodicExternalForcing =.TRUE.,
+> externForcingPeriod = 62208000.,
+> externForcingCycle = 62208000.,
+> data.off
+> offlineForcingPeriod=62208000.,
+> offlineForcingCycle=62208000.,
+>
+> It is less clear to me how the input files are mapped to actual times 
+> inside the model. From reading the documentation 
+> (http://mitgcm.org/r2_web_testing/latest/online_documents/node172.html) I 
+> concluded that the input files need to be number with suffixes that 
+> correspond to the offline model timestep. But the documentation doesn't 
+> mention interpolation, even though I am fairly sure it is happening.
+>
+> I am using a different deltat in my advection run (1200) than was used to 
+> generate the offline files (900), so I have a script to re-number the 
+> offline files accordingly. (i.e. .0000000480 becomes .0000000360 etc.) But 
+> I do not have a file for every timestep. I just have one for every 360 
+> timesteps. If I change the value of offlineForcingPeriod etc., the gcm 
+> sometimes crashes with the following sort of error:
+> (PID.TID 0000.0001)  MDS_READ_FIELD: filename: uVeltave.0000000518.data
+> (PID.TID 0000.0001)  MDS_READ_FIELD: File does not exist
+> ...with the actual timestep depending on the value. I don't understand why. 
+> Why does it require certain offline timesteps but not others? What logic is 
+> used when searching for offline data files? This makes me worried that I 
+> don't understand how the timesteps are being mapped, and my results also 
+> suggest that maybe it is not using the full two years but rather doing 
+> something strange and mysterious.
+>
+> In general, I am not confident that the offline model is doing what I want 
+> and would be very grateful (i.e. buy you a beer grateful) for someone to 
+> explain it to me thoroughly.
+>
+> Cheers,
+> __________________
+> Ryan Abernathey
+> rpa at mit.edu
+> MIT Ph.D. Student
+> Program in Oceans Atmospheres & Climate
+> http://web.mit.edu/rpa/
