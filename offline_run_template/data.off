@@ -1,0 +1,15 @@
+ &OFFLINE_PARM01
+  UvelFile='./input/ug',
+  VvelFile='./input/vg',
+ &
+
+ &OFFLINE_PARM02
+  offlineLoadPrec=64,
+  offlineIter0=0,
+  
+  deltaToffline=900.,
+  offlineForcingPeriod=86400.,
+  offlineForcingCycle=0.,
+ &
+
+

@@ -1,0 +1,10 @@
+ &FLT_NML
+
+ flt_int_traj = 86400.,
+ flt_int_prof =  0.0,
+ flt_noise    = 0.0,
+ flt_selectTrajOutp = 3,
+
+ flt_file     = '/local/floater/flt_inipo_80_2d.bin',
+ &
+
